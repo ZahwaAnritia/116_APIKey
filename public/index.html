@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -25,7 +27,8 @@
       overflow: hidden;
     }
 
- body::before {
+    /* Efek partikel lembut */
+    body::before {
       content: '';
       position: absolute;
       width: 200%;
@@ -291,7 +294,7 @@
       animation: spin 0.6s linear infinite;
     }
 
-     @keyframes spin {
+    @keyframes spin {
       to { transform: rotate(360deg); }
     }
   </style>
@@ -339,32 +342,47 @@
   </div>
 
   <script>
-  let totalKeysGenerated = 0;
+let totalKeysGenerated = 0;
 
-  async function generateApiKey() {
-    const btn = document.getElementById('generateBtn');
-    const originalContent = btn.innerHTML;
-    try {
-      btn.disabled = true;
-      btn.innerHTML = '<span class="loading"></span> Loading...';
-      const response = await fetch('/apikey/create');
-      if (!response.ok) throw new Error('Server error');
-      const data = await response.json();
-      if (data.apikey) {
-        const textarea = document.getElementById('apiKey');
-        textarea.value = data.apikey;
-        document.getElementById('keyLength').textContent = data.apikey.length;
-        totalKeysGenerated++;
-        document.getElementById('totalKeys').textContent = totalKeysGenerated;
-        showNotification('API Key berhasil dibuat!', 'success');
-      }
-    } catch (error) {
-      showNotification('Gagal membuat API key. Pastikan server berjalan!', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = originalContent;
+async function generateApiKey() {
+  const btn = document.getElementById('generateBtn');
+  const originalContent = btn.innerHTML;
+  try {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span> Loading...';
+
+    // 🔧 ubah ini: panggil endpoint yang benar, pakai POST
+    const response = await fetch('/generate', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({})
+});
+
+
+    if (!response.ok) throw new Error('Server error: ' + response.status);
+
+    const data = await response.json();
+
+    // di server kamu nama field-nya 'apiKey' (huruf besar K)
+    if (data.apiKey) {
+      const textarea = document.getElementById('apiKey');
+      textarea.value = data.apiKey;
+      document.getElementById('keyLength').textContent = data.apiKey.length;
+      totalKeysGenerated++;
+      document.getElementById('totalKeys').textContent = totalKeysGenerated;
+      showNotification('API Key berhasil dibuat!', 'success');
+    } else {
+      showNotification('Server tidak mengembalikan API Key!', 'error');
     }
+  } catch (error) {
+    console.error(error);
+    showNotification('Gagal membuat API key. ' + error.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalContent;
   }
+}
+
 
   async function copyToClipboard() {
     const textarea = document.getElementById('apiKey');
@@ -394,7 +412,3 @@
   </script>
 </body>
 </html>
-
-
-
-

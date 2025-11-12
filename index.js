@@ -1,4 +1,4 @@
-index.js
+
 import express from 'express';
 import mysql from 'mysql2';
 import crypto from 'crypto';
@@ -37,9 +37,7 @@ function generateApiKey(length = 32) {
   return crypto.randomBytes(length).toString('hex').substring(0, length);
 }
 
-// ========================================
-// 📄 Halaman utama (optional UI)
-// ========================================
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -48,22 +46,22 @@ app.get('/', (req, res) => {
 app.post('/generate', (req, res) => {
   const apikey = generateApiKey(32);
 
-  const query = 'INSERT INTO apikeys (`key`, created_at) VALUES (?, NOW())';
+  const query = 'INSERT INTO api_keys (`api_key`, created_at) VALUES (?, NOW())';
   db.query(query, [apikey], err => {
     if (err) {
       console.error('❌ Gagal menyimpan API key:', err);
       return res.status(500).json({ 
         success: false, 
         message: 'Gagal menyimpan API key ke database.' 
-      });
+      }); 
     }
 
-    res.json({
-      success: true,
-      apikey,
-      message: '✅ API key berhasil dibuat dan disimpan di database.',
-      created_at: new Date().toISOString()
-    });
+      res.json({
+    success: true,
+    apiKey: apikey, // huruf besar K biar sama dengan frontend
+    message: '✅ API key berhasil dibuat dan disimpan di database.',
+    created_at: new Date().toISOString()
+  });
   });
 });
 
