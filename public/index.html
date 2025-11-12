@@ -183,3 +183,112 @@
       box-shadow: 0 10px 25px rgba(255, 128, 171, 0.4);
     }
 
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+      background: #fff0f8;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #a052f0;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #9c27b0;
+      margin-top: 5px;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: none;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .notification.show {
+      display: flex;
+    }
+
+    .notification-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #c084f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notification-icon::after {
+      content: '✓';
+      color: white;
+      font-weight: bold;
+    }
+
+    .notification.error .notification-icon {
+      background: #ff4b91;
+    }
+
+    .notification.error .notification-icon::after {
+      content: '✕';
+    }
+
+    footer {
+      text-align: center;
+      color: #9c27b0;
+      font-size: 0.85rem;
+      padding-top: 20px;
+      border-top: 1px solid #f3c6ec;
+    }
+
+    .footer-link {
+      color: #d66ad2;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .footer-link:hover {
+      color: #a052f0;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.6s linear infinite;
+    }
+
+
