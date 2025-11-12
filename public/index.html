@@ -291,4 +291,110 @@
       animation: spin 0.6s linear infinite;
     }
 
+     @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="notification" id="notification">
+    <div class="notification-icon"></div>
+    <span id="notificationText">API Key berhasil disalin!</span>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <div class="icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+        </svg>
+      </div>
+      <h1>Generator API Key</h1>
+      <p class="subtitle">Buat API key aman dalam sekejap 💜</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-value" id="keyLength">0</div>
+        <div class="stat-label">Karakter</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="totalKeys">0</div>
+        <div class="stat-label">Dibuat</div>
+      </div>
+    </div>
+
+    <div class="key-display">
+      <textarea id="apiKey" readonly placeholder="API key akan muncul di sini..."></textarea>
+    </div>
+
+    <div class="button-group">
+      <button id="generateBtn" onclick="generateApiKey()">Generate</button>
+      <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+    </div>
+
+    <footer>
+      Dibuat dengan 💜 oleh <a href="#" class="footer-link">Zize Dev</a>
+    </footer>
+  </div>
+
+  <script>
+  let totalKeysGenerated = 0;
+
+  async function generateApiKey() {
+    const btn = document.getElementById('generateBtn');
+    const originalContent = btn.innerHTML;
+    try {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Loading...';
+      const response = await fetch('/apikey/create');
+      if (!response.ok) throw new Error('Server error');
+      const data = await response.json();
+      if (data.apikey) {
+        const textarea = document.getElementById('apiKey');
+        textarea.value = data.apikey;
+        document.getElementById('keyLength').textContent = data.apikey.length;
+        totalKeysGenerated++;
+        document.getElementById('totalKeys').textContent = totalKeysGenerated;
+        showNotification('API Key berhasil dibuat!', 'success');
+      }
+    } catch (error) {
+      showNotification('Gagal membuat API key. Pastikan server berjalan!', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalContent;
+    }
+  }
+
+  async function copyToClipboard() {
+    const textarea = document.getElementById('apiKey');
+    if (!textarea.value) {
+      showNotification('Tidak ada API key untuk disalin!', 'error');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(textarea.value);
+      showNotification('API Key berhasil disalin!', 'success');
+    } catch {
+      showNotification('Gagal menyalin ke clipboard!', 'error');
+    }
+  }
+
+  function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    const notificationText = document.getElementById('notificationText');
+    notificationText.textContent = message;
+    notification.classList.remove('error', 'success');
+    notification.classList.add(type);
+    notification.classList.add('show');
+    setTimeout(() => notification.classList.remove('show'), 3000);
+  }
+
+  window.addEventListener('load', generateApiKey);
+  </script>
+</body>
+</html>
+
+
+
 
